@@ -345,13 +345,16 @@ $ sudo tcpdump -i ens33 host 192.168.1.2
 
 
 
-#### 5、netcat / lsof
+#### 5、netstat / lsof
 
 查看端口使用情况。在端口被占用时可以通过这种方式查看。
 
 ```bash
 # 查看所有（-a）监听的（-l） TCP（-t） 端口及占用端口的进程（-p）
 $ netstat -anlpt
+
+# 查看路由表
+$ netstat -rn
 
 # 查看占用端口号的进程
 $ lsof -i :端口
