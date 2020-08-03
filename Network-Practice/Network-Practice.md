@@ -309,12 +309,12 @@ $ ssh -o ProxyCommand="ncat --proxy-type http/socks4/socks5 --proxy proxy.net:�
 
 ```bash
 # 在本机 8888 端口创建 HTTP 代理
-$ ncat -l --proxy-type http localhost 8888
+$ ncat -l --proxy-type http localhost 8888 --proxy-auth username:password
 ```
 
 ```bash
 # 测试 HTTP 代理服务器（支持隧道模式）
-$ curl -x 'http://localhost:8888' httpbin.org/anything
+$ curl -x 'http://username:password@localhost:8888' httpbin.org/anything
 ```
 
 使用场景：临时提供正向代理服务，无需安装专业代理软件
