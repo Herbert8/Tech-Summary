@@ -380,7 +380,10 @@ $ nslookup baidu.com
 
 ```bash
 # 查看路由
-$ route 
+$ route -n
+
+# 添加/删除网关
+$ route add/del default gw 主机
 
 # 统计到目标主机的每一跳的网络状态（print the route packets trace to network host），这个命令常常用于判断网络故障，比如本地不通，可使用该命令探测出是哪个路由出问题了。如果网络很卡，该命令可判断哪里是瓶颈
 $ sudo traceroute -I -n baidu.com
@@ -388,7 +391,21 @@ $ sudo traceroute -I -n baidu.com
 
 
 
-#### 8、aria2
+#### 8、ifup / ifdown
+
+```bash
+# 禁用网卡
+$ ifdown 网络设备名
+
+# 启用网卡
+$ ifup 网络设备名
+```
+
+
+
+
+
+#### 9、aria2
 
 多连接、多线程分块下载，支持 HTTP、FTP、磁力、BT 等下载。
 
@@ -396,7 +413,7 @@ $ sudo traceroute -I -n baidu.com
 
 
 
-#### 9、tmux
+#### 10、tmux
 
 - 多会话、多窗口、多面板
 - 后台+工作状态保存
@@ -494,7 +511,11 @@ $ sudo traceroute -I -n baidu.com
 （1）最初始的环境
 
 ```bash
-$ python -m SimpleHTTPServer 端口号
+# Python 2.x 环境
+$ python2 -m SimpleHTTPServer 端口号
+
+# Python 3.x 环境
+$ python3 -m http.server 端口号
 ```
 
 （2）具备 Docker 的环境
@@ -578,6 +599,8 @@ $ ssh -fgN -L 10080:WebServer1:80 SSHServer
 # 在本地主机 SSHClient 登录远程云主机 SSHServer
 # 将 SSHServer:10021 与 FTPLocalServer:21 绑定
 # 以实现将发往 SSHServer:10021 的请求转发至 FTPLocalServer:21
+# 重要：需要修改 /etc/ssh/sshd_config，指定 GatewayPorts yes
+# 并重启 SSHD 服务 service sshd restart
 
 $ ssh -fgN -R 10021:FTPLocalServer:21 SSHServer
 ```
@@ -616,11 +639,21 @@ $ ssh -fgN -D localhost:1080 SSHServer
 
 
 
+#### 4、[Brook](https://github.com/txthinking/brook)
+
+- 分体式代理（可使用 WebSocket 协议）
+- 本地端口映射
+- 中继
+- SOCKS5 代理 / HTTP 代理转换
+- 透明代理
+- DNS 服务
+- PAC 服务
+
+
+
 ### 八、后记
 
 　　本次交流中提供的方法不一定是最好的，很多方面也都是点到为止，还有待于大家继续挖掘探索。根本目标在于帮助大家形成“清单化”的工作习惯，让知识在团队内流动起来，不断积累，后续形成共同学习的氛围。
 
 
-
 （完）
-
