@@ -184,6 +184,17 @@ Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 
 
 
+### 访问 HTTP Basic Auth
+
+当访问一个需要 Basic Auth 服务的时候，如果没有带有认证信息，服务端会返回 401，Response 头部带有 `WWW-Authenticate`：
+
+```http
+HTTP/1.1 401 UNAUTHORIZED
+WWW-Authenticate: Basic realm="Fake Realm"
+```
+
+
+
 ### HTTP Basic Auth 配置方法（Nginx)
 
 ```nginx
@@ -207,6 +218,8 @@ server {
 
 
 ## 常见 HTTP HEADER 及作用
+
+详情参考 [*HTTP Headers*](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers)，这里只列出部分常用头。
 
 ### Request 部分
 
@@ -290,20 +303,30 @@ Content-Length: 56
 
 ##### `User-Agent`
 
-`User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/12.0`
+```http
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/12.0
+```
 
 
 
 ##### `Authorization`
 
-`Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==`
+```http
+Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+```
 
 
 
 ##### `Range`
 
 　　在 HTTP 头中，`Range` 都表示“资源的 byte 形式数据的顺序排列，并且取其某一段数据”的意思。`Range` 头就是表示请求资源的从某个数值到某个数值间的数据，例如：
-`Range: bytes=500-999`
+
+```http
+Range: bytes=500-999
+```
+
+就是表示请求资源从 500 到 999 byte 的数据。数据的分段下载和多线程下载就是利用这个实现的。
+
 就是表示请求资源从 500 到 999 byte 的数据。数据的分段下载和多线程下载就是利用这个实现的。
 
 　　**这些功能要求服务端支持 *Range Request***
@@ -368,7 +391,15 @@ try {
 Content-Disposition: attachment; filename=xxx.xxx;
 ```
 
-指定内容作为附件下载，同时指定下载使用的文件名，浏览器会使用这个文件名作为提示。如果文件名中包含敏感字符或者中文，需要使用 **先 UTF-8，后 percentEncoded** 的顺序进行编码。
+指定内容作为附件下载，同时指定下载使用的文件名，浏览器会使用这个文件名作为提示。如果文件名中包含敏感字符或者中文，可以约定使用 **先 UTF-8，后 percentEncoded** 的顺序进行编码。
+
+如果为了更好的兼容性，可以在内容中指定编码的方式，如：
+
+```http
+Content-Disposition: attachment; filename=xxx.xxx; filename*=utf8''abc.xyz;
+```
+
+这样的目的是让低版本的浏览器可以直接从 `filename` 中直接读取，高版本浏览器可以从 `filename*` 中根据编码读取。对于文件名的内容，也是采用先按指定规则编码，然后 percentEncoded 编码的顺序进行。
 
 
 
@@ -379,7 +410,7 @@ Content-Disposition: attachment; filename=xxx.xxx;
 
 
 
-##### `Cache-Control`
+##### `Cache-Control`（详见 HTTP Cache）
 
 - `no-cache`
 - `no-store`
@@ -408,26 +439,29 @@ Access-Control-Allow-Methods: GET, POST
 
 
 
-## HTTP 跳转
+## HTTP 重定向
 
 ### HTTP Response 301 - Moved Permanently
 
 - 作用：客户端根据 301 返回头中的 `location` 字段进行跳转
+- 重定向是永久的重定向，搜索引擎在抓取新内容的同时也将旧的网址替换为重定向之后的网址。
 - `location` 头
 
 ```http
 location: http://www.baidu.com
 ```
 
-### HTTP Response 302 - Move temporarily
+### HTTP Response 302 - Found
 
-与 301 类似
+302 重定向表示临时性转移（Temporarily Moved），当一个网页URL需要短期变化时使用。 
 
-　　区别在于：302 重定向表示临时性转移（Temporarily Moved），当一个网页URL需要短期变化时使用。 
+302 重定向是临时的重定向，搜索引擎会抓取新的内容而保留旧的网址。
 
-301 —— 重定向是永久的重定向，搜索引擎在抓取新内容的同时也将旧的网址替换为重定向之后的网址。
+### HTTP Response 303 - See Other / 307 Temporary Redirect
 
-302 —— 重定向是临时的重定向，搜索引擎会抓取新的内容而保留旧的网址。
+由于 302 的重定向不会管原始请求的方法，都会以 GET 方式访问重定向的位置，所以在 HTTP 1.1 中，302 拆分为 303 和 307，303 的行为保持与 302 一致，307 则可以保持与原始请求相同的方法访问重定向的位置，并且消息主体不会发生改变。
+
+
 
 
 
@@ -450,6 +484,8 @@ location: http://www.baidu.com
   - 标识：CAS、验证码
   - 认证
 - [Cookie 与 Session 的关系](http://justsee.iteye.com/blog/1570652)
+
+- 跨域：相同域名/IP的服务即为同域，不受端口影响，这一点与 Ajax 的跨域有所区别。但Cookie的有效性还与 Path 有关
 
 
 
@@ -617,12 +653,21 @@ $ openssl verify -CAfile cafile.pem apache.crt
 
 *背景：主要用于优化静态资源访问。但是对于动态数据，可能带来负面的影响。*
 
-| Header                                 | 作用                                                         | 引发问题                                    | 备注                                      |
-| -------------------------------------- | ------------------------------------------------------------ | ------------------------------------------- | ----------------------------------------- |
-| `Expires`                              | 指定 Cache 到期时间                                          | 依赖于客户端时间                            |                                           |
-| `Cache-Control` 与 `max-age`           | 记录有效期                                                   | 不能解决 Cache 超期但服务端内容无变化的问题 | 与 Expires 同时具备时，优先级高于 Expires |
-| `Last-Modified` 与 `If-Modified-Since` | 标识服务端内容最后修改时间。即便 Cache 超期，服务端也可以告知客户端继续使用 Cache。 | “修改时间”变化不代表内容也变了              | 服务端内容无变化时，返回 304              |
-| `ETag` 与 `If-None-Match`              | 解决判断内容变化的问题。                                     |                                             | 服务端内容无变化时，返回 304              |
+早期浏览器不允许开发人员自定义请求头，所以都是利用 Response 来指定缓存策略，在下次 Request 的时候携带相关标记。随着 Ajax 和 App 的发展，允许开发人员利用这些标记来控制缓存的使用。
+
+
+| Response Header                     | Request Header                        | 作用                                                         | 引发问题                                             | 备注                                                         |
+| ----------------------------------- | ------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- | ------------------------------------------------------------ |
+| `Expires: 过期具体时间`             | N/A                                   | 指定 Cache 内容过期时间                                      | 依赖于客户端时间                                     |                                                              |
+| `Cache-Control: max-age=有效期秒数` | N/A                                   | 指定 Cache 内容有效期（秒）                                  | Cache 过期但服务端内容无变化时，仍旧会进行数据下载。 | 与 Expires 同时具备时，优先级高于 Expires。即使 Cache-Control 指定的有效期更长，也遵循此规则。参见 [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3) |
+| `Cache-Control: no-cache`           | `Cache-Control: no-cache`             | 使用 Cache 前检查服务端资源是否有更新。                      |                                                      | 服务端内容无变化时，返回 304                                 |
+| `Cache-Control: no-store`           | `Cache-Control: no-store`             | 不使用缓存。                                                 | 不使用本地缓存，产生流量浪费。                       | N/A                                                          |
+| `Last-Modified: 资源最后修改时间`   | `If-Modified-Since: 资源最后修改时间` | 标识服务端内容最后修改时间。即便 Cache 超期，服务端也可以告知客户端继续使用 Cache。 | “修改时间”变化不代表内容也变了                       | 服务端内容无变化时，返回 304                                 |
+| `ETag: ETag 值`                     | `If-None-Match: ETag值`               | 使用 ETag 值判断服务端内容是否变化。                         | N/A                                                  | 服务端内容无变化时，返回 304                                 |
+
+组合使用：
+
+- `If-Modified-Since` 与 `If-None-Match` 组合使用，可以实现本地 Cache 未过期则继续使用，过期了检测服务端是否有变化，没变化也继续使用本地缓存。
 
 
 
@@ -630,7 +675,7 @@ $ openssl verify -CAfile cafile.pem apache.crt
 
 - 返回值差异
   - 对于缓存没有超期的情况
-    仍会返回 `200`，只不过会有 `from disk cache` 或 `from memory cache` 的标识。个别的 HTTP Client 也有不再发送请求的情况。
+    在浏览器的 Dev Tool 中查看，仍会返回 `200`，只不过会有 `from disk cache` 或 `from memory cache` 的标识。但使用抓包工具看不到网络请求。
   - 对于缓存超期的情况
     如果服务端无变化的情况，服务端会返回 `304` 指示继续使用缓存的内容。
 - `Cache-Control` 中取值的两个区别
@@ -639,6 +684,16 @@ $ openssl verify -CAfile cafile.pem apache.crt
     - `no-store` 永远不会使用 Cache。
   - `no-cache` 与 `max-age=0` 的区别
     没搞懂
+
+
+
+### 缓存规则在 SPA 页面中的使用建议
+
+- 首页 index.html 最好指定为 `Cache-Control: no-cache`，甚至 `Cache-Control: no-store`，以保证随时获取最新内容
+- 对于页面中引用的 JS 以及 CSS 等零散内容进行 Bundle，并充分利用缓存。页面在引用 Bundle 时，以 Hash 值或版本区分 Bundle 内容，避免缓存导致内容不更新
+- 图片使用 `If-Modified-Since` 与 `If-None-Match` 组合方式使用缓存
+
+
 
 ### HTTP Cache 遗留问题
 
@@ -768,11 +823,4 @@ http {
 参考资料：
 
 [《WebSocket 通訊協定簡介：比較 Polling、Long-Polling 與 Streaming 的運作原理》](https://blog.gtwang.org/web-development/websocket-protocol/)
-
-
-
-# 
-
-
-
 
