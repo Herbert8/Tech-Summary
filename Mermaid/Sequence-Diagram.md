@@ -1,6 +1,6 @@
 ## 使用 Mermaid 进行文本绘图之时序图
 
-[TOC]
+
 
 ### 一、什么是文本绘图
 
@@ -21,6 +21,8 @@
 5. **TikZ：** 一个 LaTeX 的图形绘制工具，通过 LaTeX 文本描述图形。
 
 这些工具提供了一种使用文本来创建图形的方式，适用于多种场景，包括软件文档、流程图、时序图、架构图等。文本绘图的优势之一是它在版本控制、文档化和共享方面具有便利性，同时允许用户专注于图形的结构和关系，而不必过多考虑图形编辑器的细节。
+
+
 
 举例：
 
@@ -126,13 +128,13 @@ sequenceDiagram
 
 
 
-#### （一）语法
+#### （一）Syntax（语法）
 
 参考：http://mermaid.js.org/syntax/sequenceDiagram.html#syntax
 
 `%%` 开头用作注释
 
-##### 1、Participants（参与者）、Actors（行为人）、Aliases（别名）
+##### 1、[Participants](https://mermaid.js.org/syntax/sequenceDiagram.html#participants)（参与者）、[Actors](https://mermaid.js.org/syntax/sequenceDiagram.html#actors)（行为人）、[Aliases](https://mermaid.js.org/syntax/sequenceDiagram.html#aliases)（别名）
 
 ```
 sequenceDiagram
@@ -158,9 +160,7 @@ sequenceDiagram
     N -->> U : 将后台返回的数据返回给用户
 ```
 
-
-
-##### 2、分组
+##### 2、[Grouping / Box](https://mermaid.js.org/syntax/sequenceDiagram.html#grouping-box)（分组 / 装箱）
 
 ```
     sequenceDiagram
@@ -198,7 +198,7 @@ sequenceDiagram
 
 
 
-#### （二）Messages（消息）
+#### （二）[Messages](https://mermaid.js.org/syntax/sequenceDiagram.html#messages)（消息）
 
 消息可以用实线或虚线显示两种形式。
 
@@ -246,7 +246,7 @@ sequenceDiagram
 
 
 
-#### （三）Activations（激活）
+#### （三）[Activations](https://mermaid.js.org/syntax/sequenceDiagram.html#activations)（激活）
 
 ```
 sequenceDiagram
@@ -269,7 +269,7 @@ sequenceDiagram
     John-->>-Alice: Great!
 ```
 
-#### （四）Note（注解）
+#### （四）[Note](https://mermaid.js.org/syntax/sequenceDiagram.html#notes)（注解）
 
 模式：`right of` | `left of` | `over`
 
@@ -303,7 +303,7 @@ sequenceDiagram
     Note over Alice,John: A typical interaction<br/>But now in two lines
 ```
 
-#### （五）Loops（循环）
+#### （五）[Loops](https://mermaid.js.org/syntax/sequenceDiagram.html#loops)（循环）
 
 ```
 sequenceDiagram
@@ -323,7 +323,7 @@ sequenceDiagram
     end
 ```
 
-#### （六）Alt
+#### （六）[Alt](https://mermaid.js.org/syntax/sequenceDiagram.html#alt)（替代）
 
 `alt` 与 `opt` 区别：
 
@@ -359,7 +359,7 @@ sequenceDiagram
     end
 ```
 
-#### （七）Parallel（并行）
+#### （七）[Parallel](https://mermaid.js.org/syntax/sequenceDiagram.html#parallel)（并行）
 
 ```
 sequenceDiagram
@@ -387,7 +387,7 @@ sequenceDiagram
 
 
 
-#### （八）Critical Region
+#### （八）[Critical Region](https://mermaid.js.org/syntax/sequenceDiagram.html#critical-region)
 
 使用 `option`：
 
@@ -434,7 +434,7 @@ sequenceDiagram
 
 
 
-#### （九）Break
+#### （九）[Break](https://mermaid.js.org/syntax/sequenceDiagram.html#break)
 
 ```
 sequenceDiagram
@@ -460,7 +460,7 @@ sequenceDiagram
     服务员->>管理系统: 下单入账
 ```
 
-#### （十）Background Highlighting（背景高亮）
+#### （十）[Background Highlighting](https://mermaid.js.org/syntax/sequenceDiagram.html#background-highlighting)（背景高亮）
 
 ```
 sequenceDiagram
@@ -497,3 +497,8 @@ sequenceDiagram
     Alice ->>+ John: Did you want to go to the game tonight?
     John -->>- Alice: Yeah! See you there.
 ```
+
+
+
+
+
