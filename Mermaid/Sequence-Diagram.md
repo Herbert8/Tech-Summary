@@ -498,7 +498,7 @@ sequenceDiagram
     John -->>- Alice: Yeah! See you there.
 ```
 
-#### （十一）sequenceNumbers（顺序号）
+#### （十一）[sequenceNumbers](https://mermaid.js.org/syntax/sequenceDiagram.html#sequencenumbers)（顺序号）
 
 ```
 sequenceDiagram
