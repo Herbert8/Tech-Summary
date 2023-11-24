@@ -136,6 +136,9 @@ sequenceDiagram
 
 ##### 1、[Participants](https://mermaid.js.org/syntax/sequenceDiagram.html#participants)（参与者）、[Actors](https://mermaid.js.org/syntax/sequenceDiagram.html#actors)（行为人）、[Aliases](https://mermaid.js.org/syntax/sequenceDiagram.html#aliases)（别名）
 
+- `participant`  和 `actor` 用于指定参与方。如果不明确指定参与方，Mermaid 也能够根据关系生成参与方，不过顺序是系统生成的。如果自己声明了`participant`  和 `actor` 则按声明顺序进行绘制。
+- Alias（别名）：在`participant`  和 `actor` 之后出现，用于指定参与方显示的名字，便于编写和维护。
+
 ```
 sequenceDiagram
     actor U as User
@@ -161,6 +164,8 @@ sequenceDiagram
 ```
 
 ##### 2、[Grouping / Box](https://mermaid.js.org/syntax/sequenceDiagram.html#grouping-box)（分组 / 装箱）
+
+通过分组来组织参与者之间的关系，如：按逻辑功能进行分组，使整体结构更清晰。
 
 ```
     sequenceDiagram
@@ -305,6 +310,8 @@ sequenceDiagram
 
 #### （五）[Loops](https://mermaid.js.org/syntax/sequenceDiagram.html#loops)（循环）
 
+使用 `loop` 块来标识循环执行的部分。
+
 ```
 sequenceDiagram
     Client->Server: 建立连接
@@ -324,6 +331,8 @@ sequenceDiagram
 ```
 
 #### （六）[Alt](https://mermaid.js.org/syntax/sequenceDiagram.html#alt)（替代）
+
+用于条件执行或者可选执行的场景。
 
 `alt` 与 `opt` 区别：
 
@@ -361,6 +370,8 @@ sequenceDiagram
 
 #### （七）[Parallel](https://mermaid.js.org/syntax/sequenceDiagram.html#parallel)（并行）
 
+`par`  块中的内容是并行执行的，并没有先后关系。
+
 ```
 sequenceDiagram
     par 获取 系统A 的待办数量
@@ -388,6 +399,8 @@ sequenceDiagram
 
 
 #### （八）[Critical Region](https://mermaid.js.org/syntax/sequenceDiagram.html#critical-region)
+
+用于展示 `critical` 不分在特定条件下必须自动发生的操作。
 
 使用 `option`：
 
@@ -436,6 +449,8 @@ sequenceDiagram
 
 #### （九）[Break](https://mermaid.js.org/syntax/sequenceDiagram.html#break)
 
+条件被触发时，中断后续行为。
+
 ```
 sequenceDiagram
     客人->>服务员: 点硬磕菜，这菜可以有！
@@ -461,6 +476,8 @@ sequenceDiagram
 ```
 
 #### （十）[Background Highlighting](https://mermaid.js.org/syntax/sequenceDiagram.html#background-highlighting)（背景高亮）
+
+指定区域颜色，用于通过高亮方式突出要显示的内容。
 
 ```
 sequenceDiagram
@@ -499,6 +516,8 @@ sequenceDiagram
 ```
 
 #### （十一）[sequenceNumbers](https://mermaid.js.org/syntax/sequenceDiagram.html#sequencenumbers)（顺序号）
+
+自动生成序号。
 
 ```
 sequenceDiagram
